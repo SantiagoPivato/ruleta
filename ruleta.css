@@ -14,3 +14,12 @@ button{border:0;margin:0;padding:0;}
 .box-roulette .label .text{display:inline-block;font-size:20px;font-weight:bold;line-height:1;vertical-align:middle;}
 
 #btn-start{display:block;position:absolute;left:50%;top:50%;margin:-50px 0 0 -50px;width:100px;height:100px;font-weight:bold;background:#fff;border-radius:50px;z-index:9999;cursor:pointer;}
+
+
+
+
+
+.roulette{
+	transition: 3seg filter;
+	filter: hue-rotate(360deg);
+}

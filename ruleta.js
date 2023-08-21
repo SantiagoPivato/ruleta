@@ -1,26 +1,47 @@
 
 
-fetch("https://dolar-api-argentina.vercel.app/v1/dolares/blue")
-.then(res => res.json())
-.then(data => {
-    const lista = ["a", "v", "c", "d", "e"];
+
+
+
+function crearRuleta(){
+  fetch("https://dolar-api-argentina.vercel.app/v1/dolares/blue")
+  .then(res => res.json())
+  .then(function(data) {
+      const peliculas = document.getElementById("peliculas").value.split("\n");
+      
+      const i = String(data.compra).split("").reduce((previo, actual) => Number(actual) + Number(previo)) % 10;
+      
+      const dataRuleta = peliculas.map(pelicula => {
+        const color = colorRandom();
+        return {text: pelicula, color: color}
+      });
     
-    
-    const i = String(data.compra).split("").reduce((previo, actual) => Number(actual) + Number(previo)) % 10;
-    document.getElementById("dolar-blue").innerText = i;
-    console.log(i % lista.length)
-    console.log(lista[i % lista.length])
-});
+      console.log(peliculas);
+      const anguloFinal = - (360 / peliculas.length) * i;
 
+      $('.box-roulette').roulette({}, dataRuleta, anguloFinal + 360 * 10);    
+  });
+}
 
+function colorRandom() {
+  let color = "#";
+  const posibles = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"];
+  for(let i = 0; i < 6; i++){
+    let indice = Math.floor(Math.random() * 16);
+    color += String(posibles[indice]);
+  }
 
+  return color;
+}
 
 
 (function($) {
     $.fn.extend({
   
-      roulette: function(options) {
-  
+      roulette: function(options, data, completeA) {
+        
+        document.getElementById("musica").play();
+        
         var defaults = {
           angle: 0,
           angleOffset: -45,
@@ -32,8 +53,7 @@ fetch("https://dolar-api-argentina.vercel.app/v1/dolares/blue")
   
         return this.each(function() {
           var o = opt;
-  
-          var data = [
+          /* var data = [
                       {
               color: '#3f297e',
               text: 'N분의 1'
@@ -85,8 +105,8 @@ fetch("https://dolar-api-argentina.vercel.app/v1/dolares/blue")
                       {
               color: '#881f7e',
               text: '작두'
-            }
-          ];
+            } 
+          ];*/
   
           var $wrap = $(this);
           var $btnStart = $wrap.find("#btn-start");
@@ -145,21 +165,22 @@ fetch("https://dolar-api-argentina.vercel.app/v1/dolares/blue")
   
           function rotation() {
   
-            var completeA = 360 * r(5, 10) + r(0, 360);
-  
-            $roulette.rotate({
+             var completeB = 360 * r(5, 10) + r(0, 360);
+
+             document.getElementById("musica").playbackRate = 3;
+
+             $roulette.rotate({
               angle: angle,
               animateTo: completeA,
               center: ["50%", "50%"],
               easing: $.easing.esing,
               callback: function() {
                 var currentA = $(this).getRotateAngle();
-  
-                console.log(currentA);
-  
+                document.getElementById("musica").playbackRate = 1;
+                
               },
               duration: speed
-            });
+            })
           }
   
           function r(min, max) {
@@ -173,6 +194,7 @@ fetch("https://dolar-api-argentina.vercel.app/v1/dolares/blue")
   
   $(function() {
   
-    $('.box-roulette').roulette();
-  
+    document.getElementById("ruleta-button").addEventListener("click", crearRuleta); 
+
+
   });
